@@ -1,0 +1,7 @@
+Cumulative Total Sales = CALCULATE([Total Sales],
+                                   FILTER (ALL ( DimDate[Datekey] ),
+                                   DimDate[Datekey] <= MAX ( ( DimDate[Datekey] ) ) ))
+
+Cumulative Total Sales = CALCULATE (FactSales[TotalSales],
+                                    FILTER (ALL ( DimCalendar[Dates] ),
+                                    DimCalendar[Dates] <= MAX ( ( DimCalendar[Dates] ) ) ))
