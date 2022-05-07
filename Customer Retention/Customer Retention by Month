@@ -1,0 +1,15 @@
+# Calculate customer retention after N month
+# First we need to get the total quantity of customers:
+CustomerQty = COUNTROWS(VALUES(FactSales[CustomerName]))
+
+# Calculate customer retention after N month
+RetentionQty =
+VAR N = SELECTEDVALUE(IndexTable[Index])
+VAR cur_Customers = VALUES(FactSales[CustomerName])   # The list of the customers of this month
+VAR ret_Customers =                                   # The list of the customers after N months
+CALCULATETABLE(VALUES(FactSales[CustomerName]),DATEADD(DimDate[Date],N,MONTH))
+RETURN
+COUNTROWS(INTERSECT(cur_Customers,ret_Customers))     # Returns the row intersection of two tables, retaining duplicates
+
+# Calculate customer retention rate after N month
+Retention Rate = DIVIDE([RetentionQty],FactSales[CustomerQty])
