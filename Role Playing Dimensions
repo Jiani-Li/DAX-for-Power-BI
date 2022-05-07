@@ -1,0 +1,14 @@
+# In many E-commerce Website, the order date and payment date of the same item is different. In order to compare the sales amount by order date and payment date, we can use role playing dimension.
+# Role Playing Dimensions: When the same dimension acts multiple times in the same fact table with different roles. 
+# DAX function: USERELATIONSHIP
+
+TotalSales = SUM(FactsSales[Sales Amount])
+TotalSalesByOrderDate = CALCULATE(FactsSales[TotalSales],
+                                  USERELATIONSHIP(
+                                                  FactsSales[Order Date],
+                                                  DimCalendar[Dates]))
+TotalSalesByPaymentDate = CALCULATE(FactsSales[TotalSales],
+                                    USERELATIONSHIP(
+                                                    FactsSales[Payment Date],
+                                                    DimCalendar[Dates]))
+
