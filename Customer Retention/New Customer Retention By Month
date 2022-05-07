@@ -1,0 +1,33 @@
+# Calculate new customer retention after N month
+# First we need to get the total quantity of customers:
+CustomerQty = COUNTROWS(VALUES(FactSales[CustomerName]))
+
+# Then we need to calculate the quantity of new customers
+# Based on the order date, we add a new column of  "FirstDate", then we can alculate the first order date of every customer
+NewCustomerQty =
+VAR FirstOrderDate = ADDCOLUMNS(All(FactSales[CustomerName]),
+                               "FirstDate",
+                                CALCULATE(MIN(FactSales[OrderDate]),
+                                ALLEXCEPT(FactSales,FactSales[CustomerName]))
+                                ) # Calculate the first order date of every customer
+VAR NewCustomer = FILTER(FirstOrderDate,
+                         CONTAINS(VALUES(DimDate[Date]),DimDate[Date],[FirstDate])
+                  ) # Return the list of new customers
+RETURN CALCULATE(FactSales[CustomerQty],NewCustomer)
+
+# Calculate new customer retention after N month
+NewRetentionQty =
+VAR N = SELECTEDVALUE(IndexTable[Index])
+VAR FirstOrderDate = ADDCOLUMNS(All(FactSales[CustomerName]),
+                                "FirstDate",
+                                CALCULATE(MIN(FactSales[OrderDate]),
+                                ALLEXCEPT(FactSales,FactSales[CustomerName]))
+                                 ) # Calculate the first order date of every customer
+VAR NewCustomer = FILTER(FirstOrderDate,
+                         CONTAINS(VALUES(DimDate[Date]),DimDate[Date],[FirstDate])
+                         ) # Return the list of new customers
+RETURN CALCULATE(FactSales[CustomerQty],NewCustomer,DATEADD(DimDate[Date],N,MONTH))
+
+NewRetentionRate = DIVIDE([NewRetentionQty],[NewCustomerQty])
+
+
