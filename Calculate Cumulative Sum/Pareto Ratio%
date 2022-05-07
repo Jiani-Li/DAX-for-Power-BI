@@ -1,0 +1,8 @@
+Pareto Ratio% =
+VAR Sales = FactSalesOverview[TotalSales]
+VAR CulSales = CALCULATE(FactSalesOverview[TotalSales],
+                         FILTER(ALL(DimProduct[SubCategory]),FactSalesOverview[TotalSales]>=Sales))
+VAR SalesPercent = DIVIDE(CulSales,
+                          CALCULATE(FactSalesOverview[TotalSales],
+                          ALL(DimProduct[SubCategory])))
+RERURN SalesPercent
