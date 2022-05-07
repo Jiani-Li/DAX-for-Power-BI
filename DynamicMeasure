@@ -1,0 +1,16 @@
+DynamicMeasure =
+VAR Myindicator = SELECTEDVALUE(DimIndicator[IndicatorName],FactsSales[TotalSales])
+RETURN
+SWITCH (TRUE(),
+        Myindicator="TotalSalesLY",FactsSales[TotalSalesLY],
+        Myindicator="TotalSalesLM",FactsSales[TotalSalesLM],
+        Myindicator="TotalSalesNM",FactsSales[TotalSalesNM],
+        Myindicator="TotalSalesYTD",FactsSales[TotalSalesYTD],
+        Myindicator="TotalSalesMTD",FactsSales[TotalSalesMTD],
+        FactsSales[TotalSales])
+
+Month = GENERATESERIES(-12,12,1)
+MonthValue = SELECTEDVALUE('Month'[N Month],-1)
+TotalSales Last N Month = CALCULATE(FactsSales[TotalSales],
+                                    DATEADD(DimCalendar[Dates],'Month'[MonthValue],MONTH))
+
