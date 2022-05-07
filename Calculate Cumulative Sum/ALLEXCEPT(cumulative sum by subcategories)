@@ -1,0 +1,9 @@
+# No needs to calculate the total cumulative sum for the category
+# But we need to calculate the cumulative sum of the products by subcategory
+# In this case, we use ALLEXCEPT
+Accum_Sales2 =
+VAR cur_Sales = FactSales[TotalSales]
+RETURN CALCULATE([TotalSales],
+                FILTER(ALL(DimProducts[Product Name]),
+                FactSales[TotalSales]>=cur_Sales),
+                ALLEXCEPT(DimProducts,DimProducts[Product Category]))
