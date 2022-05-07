@@ -1,0 +1,17 @@
+# Use variables to calculate the cumulative sum of sales amount by products' names:
+# VAR,FILTER(ALL())
+CumlativeSales =
+VAR cur_Sales = FactSales[TotalSales]
+RETURN CALCULATE([TotalSales],
+                 FILTER(ALL(DimProducts[Product Name]),
+                 FactSales[TotalSales]>=cur_Sales))
+
+
+# Use variables to calculate the cumulative sum of sales amount by products' subcategories:
+# VAR,FILTER(ALL())
+Accum_Sales = 
+VAR Sales = FactSalesOverview[TotalSales]
+VAR Accum_Sales = CALCULATE(FactSalesOverview[TotalSales],
+                  FILTER(ALL(DimProduct[SubCategory]),
+                  FactSalesOverview[TotalSales]>=Sales))
+RETURN Accum_Sales
