@@ -1,0 +1,22 @@
+# In most of the case of sales dashboard, I need show the sales data in different currencies based on different years. The corporate currency is DKK.
+# We have the two fact tables: FactSalesOverview andFactExchangeRates
+# We also use 2 dimensional tables :DimCurrency and DimDate
+# The DAX functions we have used are: VAR,SELECTEDVALUE, LOOKUPVALUE
+# In order to calculate the different currencies, we also need to generate a new dimensional table:DimCurrency 
+DimCurrency 
+= DISTINCT(FactExchangeRates[Currency])
+
+# First we will use the original currency of DDK to calculate the total sales amount:
+TotalSales DKK = SUM(FactSalesOverview[Sales Amount DKK])
+
+# Then we use the variables to calculate total sales in different currency:
+TotalSales =
+VAR SelectedDate = SELECTEDVALUE(DimDate[Year])
+VAR SelectedCurrency = SELECTEDVALUE(DimCurrency[Currency])
+VAR rate = DIVIDE(LOOKUPVALUE(FactExchangeRates[Exchange Rate],
+                              FactExchangeRates[Currency],SelectedCurrency,
+                              FactExchangeRates[Year],SelectedDate)
+                              ,100)
+VAR result = DIVIDe([TotalSales DKK],rate)
+RETRUN result
+
